@@ -1,0 +1,26 @@
+div.body
+{
+    color: #3e4e44;
+}
+
+div.body a.reference.internal
+{
+    color: #19783f;
+    border-bottom: 1px dotted #19783f;
+}
+
+div.body a.reference.internal:hover
+{
+    color: #195169;
+    border-bottom: 1px solid #195169;
+}
+
+dt:target, .highlighted
+{
+    background: #c2ed8e;
+}
+
+dt:target, .highlight
+{
+    background: #d3e0e5;
+}
