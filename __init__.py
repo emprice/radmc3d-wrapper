@@ -26,8 +26,10 @@ def execute(cmd, working_dir):
         os.chdir(olddir)
 
 
-from fileio import *
+from cgs import *
 from configuration import *
+from dust import *
+from fileio import *
 from grid import *
 from simulation import *
 from render import *

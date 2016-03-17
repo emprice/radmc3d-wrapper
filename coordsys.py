@@ -49,8 +49,6 @@ class CartesianCoordinates(Coordinates):
     :param: z
     '''
 
-    code = 0
-
     def __init__(self, x, y, z):
 
         self.x = x
@@ -61,8 +59,6 @@ class CartesianCoordinates(Coordinates):
 
 class SphericalCoordinates(Coordinates):
 
-    code = 100
-
     def __init__(self, r, theta, phi):
 
         self.x = r * np.sin(theta) * np.cos(phi)
@@ -72,8 +68,6 @@ class SphericalCoordinates(Coordinates):
 
 
 class CylindricalCoordinates(Coordinates):
-
-    code = 200
 
     def __init__(self, s, phi, z):
 

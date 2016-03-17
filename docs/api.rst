@@ -1,7 +1,7 @@
 Full API documentation
 ======================
 
-.. automodule:: fileio
+.. automodule:: cgs
    :members:
 
 .. automodule:: configuration
@@ -10,8 +10,14 @@ Full API documentation
 .. automodule:: coordsys
    :members:
 
-.. automodule:: vectorsys
+.. automodule:: dust
+   :members:
+
+.. automodule:: fileio
    :members:
 
 .. automodule:: grid
+   :members:
+
+.. automodule:: vectorsys
    :members:
