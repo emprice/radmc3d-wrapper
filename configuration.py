@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 
 class Radmc3dConfiguration(object):
+    '''
+    Simple container class for the RADMC3D configuration. Both member assignment
+    and setting are supported, but no validation is done on the set values.
+    An example of using this class is given below.
+
+    >>> c = Radmc3dConfiguration(io)
+    >>> c.incl_dust = True
+    >>> c.incl_dust
+    True
+
+    :param io: :ref:`Radmc3dIo` instance
+    '''
 
     def __init__(self, io):
 
@@ -48,8 +60,7 @@ class Radmc3dConfiguration(object):
 
     def write(self):
 
-        fp = self.io.fullpath('radmc3d.inp')
-        with self.io.file_open_write(fp) as f:
+        with self.io.file_open_write('radmc3d.inp') as f:
             props = self.__dict__
             props = { k[1:] : v for k, v in props.items()
                       if k[0] == '_' and v is not None }
