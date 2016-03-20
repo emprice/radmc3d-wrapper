@@ -7,10 +7,7 @@ from coordsys import CartesianCoordinates, SphericalCoordinates, \
 
 class Radmc3dGrid(object):
 
-    def __init__(self, io, coordsys):
-
-        self.io = io
-        self.coordsys = coordsys
+    def __init__(self):
 
         self.coordmap = { 0 : CartesianCoordinates,
                           100 : SphericalCoordinates,
@@ -21,20 +18,21 @@ class Radmc3dGrid(object):
         self._ptcoords = None
         self._cellcoords = None
 
+        self._coordsys = CartesianCoordinates
         self._u = np.empty((0,))
         self._v = np.empty((0,))
         self._w = np.empty((0,))
 
 
-    def write(self, binary=True, dtype=np.float64):
+    def write(self, io):
         '''
         Writes a grid definition to a file.
         '''
 
-        sep = '' if binary else '\n'
-        ext = 'binp' if binary else 'inp'
+        sep = '' if io.binary else '\n'
+        ext = 'binp' if io.binary else 'inp'
 
-        with self.io.file_open_write('.'.join(['amr_grid', ext])) as f:
+        with io.file_open_write('.'.join(['amr_grid', ext])) as f:
 
             hdr = np.empty((10,), dtype=np.int64)
             hdr[0] = 1
@@ -46,49 +44,13 @@ class Radmc3dGrid(object):
             hdr[8] = self.nv
             hdr[9] = self.nw
 
-            if binary:
-                hdr = np.insert(hdr, 1, [8 if dtype == np.float64 else 4])
-
-            hdr.tofile(f, sep, format='%d')
-            if not binary: f.write('\n')
-            self._u.tofile(f, sep=sep, format='%e')
-            if not binary: f.write('\n')
-            self._v.tofile(f, sep=sep, format='%e')
-            if not binary: f.write('\n')
-            self._w.tofile(f, sep=sep, format='%e')
-
-
-    def read(self, binary=True):
-        '''
-        Reads a grid definition from an existing file.
-        '''
-
-        sep = '' if binary else ' '
-        ext = 'binp' if binary else 'inp'
-
-        with self.io.file_open_read('.'.join(['amr_grid', ext])) as f:
-            count = 3 if binary else 2
-            hdr = np.fromfile(f, dtype=np.int64, count=count, sep=sep)
-
-            self.iformat = hdr[0]
-            assert self.iformat == 1
-
-            dtype = np.float64 if not binary else \
-                (np.float64 if hdr[1] == 8 else np.float32)
-            self.gridstyle = hdr[1] if not binary else hdr[2]
-
-            if self.gridstyle == 0:
-                hdr = np.fromfile(f, dtype=np.int64, count=8, sep=sep)
-                self.coordsys, _, self.inclx, self.incly, \
-                    self.inclz, self.nu, self.nv, self.nw = hdr
-
-                self._u = np.fromfile(f, dtype=dtype, count=self.nu+1, sep=sep)
-                self._v = np.fromfile(f, dtype=dtype, count=self.nv+1, sep=sep)
-                self._w = np.fromfile(f, dtype=dtype, count=self.nw+1, sep=sep)
-                self.update_coords()
-
-            else:
-                raise NotImplementedError
+            hdr.tofile(f, sep=sep, format='%d')
+            if not io.binary: f.write('\n')
+            self._u.astype(io.dtype).tofile(f, sep=sep, format='%e')
+            if not io.binary: f.write('\n')
+            self._v.astype(io.dtype).tofile(f, sep=sep, format='%e')
+            if not io.binary: f.write('\n')
+            self._w.astype(io.dtype).tofile(f, sep=sep, format='%e')
 
 
     def update_coords(self):
@@ -117,6 +79,15 @@ class Radmc3dGrid(object):
     @property
     def cellcoords(self):
         return self._cellcoords
+
+    @property
+    def coordsys(self):
+        return self._coordsys
+
+    @coordsys.setter
+    def coordsys(self, val):
+        self._coordsys = val
+        self.update_coords()
 
     @property
     def u(self):

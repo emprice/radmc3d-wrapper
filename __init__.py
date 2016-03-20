@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import shlex
 import subprocess
 
@@ -27,11 +28,8 @@ def execute(cmd, working_dir):
 
 
 from cgs import *
-from configuration import *
+from star import *
 from dust import *
-from fileio import *
-from grid import *
 from simulation import *
-from render import *
 
 # vim: set ft=python:

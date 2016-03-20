@@ -1,22 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import numpy as np
+
+
 class Radmc3dConfiguration(object):
     '''
     Simple container class for the RADMC3D configuration. Both member assignment
     and setting are supported, but no validation is done on the set values.
-    An example of using this class is given below.
-
-    >>> c = Radmc3dConfiguration(io)
-    >>> c.incl_dust = True
-    >>> c.incl_dust
-    True
-
-    :param io: :ref:`Radmc3dIo` instance
     '''
 
-    def __init__(self, io):
-
-        self.io = io
+    def __init__(self):
 
         self._incl_dust = None
         self._incl_lines = None
@@ -58,9 +51,9 @@ class Radmc3dConfiguration(object):
         self._tgas_eq_tdust = None
 
 
-    def write(self):
+    def write(self, io):
 
-        with self.io.file_open_write('radmc3d.inp') as f:
+        with io.file_open_write('radmc3d.inp') as f:
             props = self.__dict__
             props = { k[1:] : v for k, v in props.items()
                       if k[0] == '_' and v is not None }

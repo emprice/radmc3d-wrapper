@@ -16,20 +16,29 @@ Simple use example
            return self.rho0 * np.exp(-0.5 * rr**2 / self.sigma**2)
 
 
-   io = r3d.Radmc3dIo('simfiles', binary=False)
+   sim = r3d.Radmc3dSimulation()
 
-   config = r3d.Radmc3dConfiguration(io)
-   config.istar_sphere = False
-   config.incl_dust = True
-   config.nphot = 100000
-   config.write()
+   sim.io.outdir = 'simfiles'
+   sim.io.clobber = True
+   sim.io.binary = True
 
-   grid = r3d.Radmc3dGrid(io, r3d.coordsys.CartesianCoordinates)
-   grid.u = np.linspace(-10., 10., 32) * r3d.cgs.au
-   grid.v = np.linspace(-10., 10., 32) * r3d.cgs.au
-   grid.w = np.linspace(-10., 10., 32) * r3d.cgs.au
-   grid.write(binary=False)
+   sim.config.istar_sphere = False
+   sim.config.incl_dust = True
+   sim.config.nphot = 100000
 
-   dust = MyDust(rho0=1.e-16, sigma=5.*r3d.cgs.au)
-   density = r3d.Radmc3dDustDensity(io, dust)
-   density.write(grid, binary=False)
+   sim.grid.coordsys = r3d.coordsys.CartesianCoordinates
+   sim.grid.u = np.linspace(-10., 10., 32) * r3d.cgs.au
+   sim.grid.v = np.linspace(-10., 10., 32) * r3d.cgs.au
+   sim.grid.w = np.linspace(-10., 10., 32) * r3d.cgs.au
+
+   sim.lmbda = np.logspace(-1., 3., 1000)
+
+   sim.dust['silicate'] = MyDust(rho0=1.e-16, sigma=5.*r3d.cgs.au)
+
+   sim.star[0] = r3d.Radmc3dBlackbodyStar(radius=r3d.cgs.RSun,
+       mass=r3d.cgs.MSun, Teff=5700.,
+       center=r3d.CartesianCoordinates(0., 0., 0.),
+
+   sim.commit()
+   sim.mctherm()
+   sim.render()
