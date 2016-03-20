@@ -3,6 +3,16 @@ div.body
     color: #3e4e44;
 }
 
+div.body a
+{
+    color: #0c562a;
+}
+
+div.body a:hover
+{
+    color: #436d10;
+}
+
 div.body a.reference.internal
 {
     color: #19783f;
