@@ -20,7 +20,7 @@ Simple use example
    sim = r3d.Radmc3dSimulation()
 
    sim.io.outdir = 'simfiles'
-   sim.io.clobber = True
+   sim.io.clobber = False
    sim.io.binary = True
 
    sim.config.istar_sphere = False
@@ -37,8 +37,8 @@ Simple use example
    sim.dust['silicate'] = MyDust(rho0=1.e-16, sigma=5.*r3d.cgs.au)
 
    sim.star[0] = r3d.Radmc3dBlackbodyStar(radius=r3d.cgs.RSun,
-       mass=r3d.cgs.MSun, Teff=5700.,
        center=r3d.CartesianCoordinates(0., 0., 0.),
+       mass=r3d.cgs.MSun, Teff=5700.)
 
    sim.commit()
    sim.mctherm()

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-import shutil
 import numpy as np
 
 
 class Radmc3dIo(object):
+    '''
+    Class defining common I/O operations needed by the module so that they
+    can be carried out in a consistent way.
+    '''
 
     def __init__(self):
 
@@ -16,19 +19,62 @@ class Radmc3dIo(object):
         self._dtype = np.float64
 
 
+    def fullpath(self, fname):
+        '''
+        Returns a "full path" (the concatenation of the output directory and
+        given filename) to a file.
+
+        :param str fname: The filename relative to the output directory
+
+        :returns: The filename relative to the initial directory
+        :rtype: str
+        '''
+
+        return os.path.join(self.outdir, fname)
+
+
     def memmap(self, f, offset, dtype, shape, mode):
-        ''' '''
+        '''
+        Returns a memory map (in FORTRAN order, since RADMC3D uses this
+        format exclusively) that can be used like an array but is written
+        to a file in binary format.
+
+        :param f: A filename or file-like object; if a filename is given, it
+            should be relative to the global output directory
+        :param int offset: Offset in the file (in bytes) at which the map should
+            begin
+        :param dtype: The data type (:code:`np.float64` or :code:`np.float32`)
+            of the mapped array
+        :param tuple shape: A tuple representing the shape of the mapped array
+        :param str mode: The mode string, generally :code:`w+` for writing or
+            :code:`r` for reading only
+
+        :returns: Memory map to the array
+        :rtype: numpy.core.memmap.memmap
+        '''
+
         if type(f) is str: f = self.fullpath(f)
         return np.memmap(f, dtype=dtype, mode=mode, offset=offset,
             shape=shape, order='F')
 
 
     def safe_check_clobber(self, target):
+        '''
+        Checks whether it is safe to clobber a file. If the user has specified
+        that file clobbering is allowed or if the file does not exist, this
+        method has no effect; otherwise, the user is prompted for each
+        existing file and must approve clobbering to continue.
 
-        if not self.clobber and os.path.isfile(target):
+        :param str target: A filename relative to the global output directory
+
+        :raises RuntimeError: if the user aborts clobbering
+        '''
+
+        fp = self.fullpath(target)
+        if not self.clobber and os.path.isfile(fp):
             while True:
-                r = raw_input('the file %s already exists! overwrite? [y/n] '
-                    % target)
+                r = raw_input('the file %s already exists! ' % fp +
+                              'ok to overwrite? [y/n] ')
                 r = r.lower()
 
                 if r in ['y', 'n']:
@@ -38,45 +84,51 @@ class Radmc3dIo(object):
                 raise RuntimeError('file overwrite aborted by user!')
 
 
-    def fullpath(self, fname):
-
-        return os.path.join(self.outdir, fname)
-
-
     def file_check_exists(self, target):
+        '''
+        Checks whether the given file exists.
+
+        :param str target: A filename relative to the global output directory
+
+        :returns: :code:`True` if the file exists, :code:`False` otherwise
+        :rtype: bool
+        '''
 
         return os.path.isfile(self.fullpath(target))
 
 
     def file_open_write(self, target):
+        '''
+        Opens a file for writing, checking whether it is safe to clobber any
+        existing file by the same name before doing so.
 
-        fp = self.fullpath(target)
-        self.safe_check_clobber(fp)
-        return open(fp, 'w')
+        :param str target: A filename relative to the global output directory
+
+        :returns: A file pointer to the open file
+        :rtype: file
+        '''
+
+        self.safe_check_clobber(target)
+        return open(self.fullpath(target), 'w')
 
 
     def file_open_read(self, target):
+        '''
+        Opens a file for reading; there is no need to check whether clobbering
+        is safe in this case, because this is not a destructive operation.
 
-        fp = self.fullpath(target)
-        return open(fp, 'r')
+        :param str target: A filename relative to teh global output directory
 
+        :returns: A file pointer to the open file
+        :rtype: file
+        '''
 
-    def file_copy(self, src, dest):
-
-        fp = self.fullpath(target)
-        self.safe_check_clobber(fp)
-        shutil.copy(src, fp)
-
-
-    def file_delete(self, target):
-
-        fp = self.fullpath(target)
-        self.safe_check_clobber(fp)
-        os.remove(fp)
+        return open(self.fullpath(target), 'r')
 
 
     @property
     def outdir(self):
+        '''The output directory, relative to the initial directory'''
         return self._outdir
 
     @outdir.setter
@@ -85,6 +137,10 @@ class Radmc3dIo(object):
 
     @property
     def clobber(self):
+        '''
+        :code:`True` if existing files should be clobbered if they already
+        exist, :code:`False` otherwise.
+        '''
         return self._clobber
 
     @clobber.setter
@@ -93,6 +149,12 @@ class Radmc3dIo(object):
 
     @property
     def binary(self):
+        '''
+        :code:`True` if input files should be binary; :code:`False` if
+        ASCII should be used instead. Note that this has no effect on the
+        format of output files; for that setting, see
+        :class:`configuration.Radmc3dConfiguration.rto_style`.
+        '''
         return self._binary
 
     @binary.setter
@@ -101,6 +163,12 @@ class Radmc3dIo(object):
 
     @property
     def precision(self):
+        '''
+        Set to :code:`double` if double-precision input is desired; otherwise,
+        set to :code:`single`. Note that this has no effect on the format of
+        output files; for that setting, see
+        :class:`configuration.Radmc3dConfiguration.rto_single`.
+        '''
         return 'double' if self._precis == 8 else 'single'
 
     @precision.setter
@@ -110,10 +178,14 @@ class Radmc3dIo(object):
 
     @property
     def precis(self):
+        '''
+        Read-only; gives the number of bytes of the current float data type.
+        '''
         return self._precis
 
     @property
     def dtype(self):
+        '''Read-only; gives the current float data type as a NumPy dtype.'''
         return self._dtype
 
 # vim: set ft=python:
