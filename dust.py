@@ -28,7 +28,7 @@ class Radmc3dDustSpecies(object):
             density
 
         :returns: An array of densities
-        :rtype: numpy.ndarray
+        :rtype: np.ndarray
 
         :raises NotImplementedError: if the user does not define a density
             function
@@ -54,7 +54,6 @@ class Radmc3dDustContainer(dict):
         Writes the current content of this container to input files for
         RADMC3D. This function uses the I/O context to determine the output
         format (binary or ASCII) and formats all files appropriately.
-
 
         :param fileio.Radmc3dIo io: Current I/O context
         :param grid.Radmc3dGrid grid: Current grid definition

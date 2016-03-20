@@ -113,7 +113,7 @@ class Radmc3dGrid(object):
         '''
         The first coordinate of the grid. This is called :code:`x` in the
         RADMC3D manual; we use :code:`u` here to avoid confusion with
-        true Cartesian coordinates. Expects a NumPy ndarray.
+        true Cartesian coordinates. Expects a NumPy array.
         '''
         return self._u
 
@@ -128,7 +128,7 @@ class Radmc3dGrid(object):
         '''
         The first coordinate of the grid. This is called :code:`y` in the
         RADMC3D manual; we use :code:`v` here to avoid confusion with
-        true Cartesian coordinates. Expects a NumPy ndarray.
+        true Cartesian coordinates. Expects a NumPy array.
         '''
         return self._v
 
@@ -143,7 +143,7 @@ class Radmc3dGrid(object):
         '''
         The first coordinate of the grid. This is called :code:`z` in the
         RADMC3D manual; we use :code:`w` here to avoid confusion with
-        true Cartesian coordinates. Expects a NumPy ndarray.
+        true Cartesian coordinates. Expects a NumPy array.
         '''
         return self._w
 

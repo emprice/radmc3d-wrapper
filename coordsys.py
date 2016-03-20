@@ -55,9 +55,9 @@ class CartesianCoordinates(Coordinates):
     '''
     Basic container class for Cartesian coordinates.
 
-    :param x: The *x*-coordinate; may be a float type or np.ndarray
-    :param y: The *y*-coordinate; may be a float type or np.ndarray
-    :param z: The *z*-coordinate; may be a float type or np.ndarray
+    :param x: The *x*-coordinate; may be a float type or NumPy array
+    :param y: The *y*-coordinate; may be a float type or NumPy array
+    :param z: The *z*-coordinate; may be a float type or NumPy array
     '''
 
     def __init__(self, x, y, z):
@@ -72,9 +72,9 @@ class SphericalCoordinates(Coordinates):
     '''
     Basic container class for spherical polar coordinates.
 
-    :param r: The radial coordinate; may be a float type or np.ndarray
-    :param theta: The latitudinal coordinate; may be a float type or np.ndarray
-    :param phi: The azimuthal coordinate; may be a float type or np.ndarray
+    :param r: The radial coordinate; may be a float type or NumPy array
+    :param theta: The latitudinal coordinate; may be a float type or NumPy array
+    :param phi: The azimuthal coordinate; may be a float type or NumPy array
     '''
 
     def __init__(self, r, theta, phi):
@@ -89,9 +89,9 @@ class CylindricalCoordinates(Coordinates):
     '''
     Basic container class for cylindrical coordinates.
 
-    :param s: The radial coordinate; may be a float type or np.ndarray
-    :param phi: The azimuthal coordinate; may be a float type or np.ndarray
-    :param z: The vertical coorindate; may be a float type or np.ndarray
+    :param s: The radial coordinate; may be a float type or NumPy array
+    :param phi: The azimuthal coordinate; may be a float type or NumPy array
+    :param z: The vertical coorindate; may be a float type or NumPy array
     '''
 
     def __init__(self, s, phi, z):
