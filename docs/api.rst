@@ -1,23 +1,82 @@
 Full API documentation
 ======================
 
+cgs module
+----------
+
 .. automodule:: cgs
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+configuration module
+--------------------
 
 .. automodule:: configuration
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+coordsys module
+---------------
 
 .. automodule:: coordsys
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+dust module
+-----------
 
 .. automodule:: dust
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fileio module
+-------------
 
 .. automodule:: fileio
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+grid module
+-----------
 
 .. automodule:: grid
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+render module
+-------------
+
+.. automodule:: render
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+simulation module
+-----------------
+
+.. automodule:: simulation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+star module
+-----------
+
+.. automodule:: star
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vectorsys module
+----------------
 
 .. automodule:: vectorsys
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
