@@ -60,7 +60,10 @@ class cgs(object):
 
     @classproperty
     def G(self):
-        '''Newtonian gravitational constant, cm:math:`{}^3`/g/s:math:`{}^2`'''
+        '''
+        Newtonian gravitational constant,
+        :math:`\\textrm{cm}^3 / \\textrm{g} / \\textrm{s}^2`
+        '''
         return 6.67384e-8
 
     @classproperty

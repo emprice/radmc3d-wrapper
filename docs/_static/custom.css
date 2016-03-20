@@ -17,10 +17,15 @@ div.body a.reference.internal:hover
 
 dt:target, .highlighted
 {
-    background: #c2ed8e;
+    background-color: #c2ed8e;
 }
 
 dt:target, .highlight
 {
-    background: #d3e0e5;
+    background-color: #d3e0e5;
+}
+
+tt, code
+{
+    background-color: #dbf5bb;
 }

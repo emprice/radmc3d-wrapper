@@ -6,8 +6,23 @@ from coordsys import CartesianCoordinates
 
 
 class Radmc3dVtkRender(object):
+    '''
+    Renders the current input and output files as VTK output that can be
+    visualized with VisIt and other VTK visualization software.
+    '''
 
     def read_dust_density(self, io, grid):
+        '''
+        Private function. Reads the current dust density input file.
+
+        :param Radmc3dIo io: Current I/O context
+        :param Radmc3dGrid grid: Current grid definition
+
+        :returns: A dictionary of name-array pairs for each dust species
+        :rtype: dict
+
+        :raises IOError: if a required file is not found
+        '''
 
         names = list()
 
@@ -26,7 +41,7 @@ class Radmc3dVtkRender(object):
             ext, sep, count, binary = 'binp', '', 4, True
 
         else:
-            raise RuntimeError
+            return
 
         ret = dict()
 
@@ -55,6 +70,17 @@ class Radmc3dVtkRender(object):
 
 
     def read_dust_temperature(self, io, grid):
+        '''
+        Private function. Reads the current dust temperature output file.
+
+        :param Radmc3dIo io: Current I/O context
+        :param Radmc3dGrid grid: Current grid definition
+
+        :returns: A dictionary of name-array pairs for each dust species
+        :rtype: dict
+
+        :raises IOError: if a required file is not found
+        '''
 
         names = list()
 
@@ -73,7 +99,7 @@ class Radmc3dVtkRender(object):
             ext, sep, count, binary = 'bdat', '', 4, True
 
         else:
-            raise RuntimeError
+            return
 
         ret = dict()
 
@@ -102,6 +128,13 @@ class Radmc3dVtkRender(object):
 
 
     def render(self, io, grid):
+        '''
+        Writes the VTK file for all variables that can be found in the output
+        directory.
+
+        :param Radmc3dIo io: Current I/O context
+        :param Radmc3dGrid grid: Current grid definition
+        '''
 
         cellData = dict()
         cellData.update(self.read_dust_density(io, grid))

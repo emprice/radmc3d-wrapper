@@ -6,7 +6,7 @@ import numpy as np
 class Radmc3dConfiguration(object):
     '''
     Simple container class for the RADMC3D configuration. Both member assignment
-    and setting are supported, but no validation is done on the set values.
+    and retrieval are supported, but no validation is done on the set values.
     '''
 
     def __init__(self):
@@ -52,6 +52,11 @@ class Radmc3dConfiguration(object):
 
 
     def write(self, io):
+        '''
+        Writes the encapsulated configuration to the file :code:`radmc3d.inp`.
+
+        :param Radmc3dIo io: Global I/O instance
+        '''
 
         with io.file_open_write('radmc3d.inp') as f:
             props = self.__dict__

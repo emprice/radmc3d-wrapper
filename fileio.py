@@ -153,7 +153,7 @@ class Radmc3dIo(object):
         :code:`True` if input files should be binary; :code:`False` if
         ASCII should be used instead. Note that this has no effect on the
         format of output files; for that setting, see
-        :class:`configuration.Radmc3dConfiguration.rto_style`.
+        :func:`~configuration.Radmc3dConfiguration.rto_style`.
         '''
         return self._binary
 
@@ -167,7 +167,7 @@ class Radmc3dIo(object):
         Set to :code:`double` if double-precision input is desired; otherwise,
         set to :code:`single`. Note that this has no effect on the format of
         output files; for that setting, see
-        :class:`configuration.Radmc3dConfiguration.rto_single`.
+        :func:`~configuration.Radmc3dConfiguration.rto_single`.
         '''
         return 'double' if self._precis == 8 else 'single'
 
