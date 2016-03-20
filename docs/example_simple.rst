@@ -2,6 +2,7 @@ Simple use example
 ==================
 
 .. code-block:: python
+
    import radmc3d as r3d
    import numpy as np
 

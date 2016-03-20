@@ -1,34 +1,43 @@
 # -*- coding: utf-8 -*-
 
-'''Astronomical unit, cm'''
-au = 1.49597870700e13
+class cgs(object):
 
-'''Speed of light in vacuum, cm/s'''
-c = 2.99792458e10
+    @property
+    def au(self):
+        '''Astronomical unit, cm'''
+        return 1.49597870700e13
 
-'''Newtonian gravitational constant, cm^3/g/s^2'''
-G = 6.67384e-8
+    @property
+    def c(self):
+        '''Speed of light in vacuum, cm/s'''
+        return 2.99792458e10
 
-'''Solar luminosity, erg/s'''
-Lsun = 3.828e33
+    @property
+    def G(self):
+        '''Newtonian gravitational constant, cm^3/g/s^2'''
+        return 6.67384e-8
 
-'''Earth mass, g'''
-MEarth = 5.9726e27
+    @property
+    def LSun(self):
+        '''Solar luminosity, erg/s'''
+        return 3.828e33
 
-'''Solar mass, g'''
-MSun = 1.9885e33
+    @property
+    def MEarth(self):
+        '''Earth mass, g'''
+        return 5.9726e27
 
-'''Earth radius, cm'''
-REarth = 6.378137e8
+    @property
+    def MSun(self):
+        '''Solar mass, g'''
+        return 1.9885e33
 
-'''Solar radius, cm'''
-RSun = 6.9551e10
+    @property
+    def REarth(self):
+        '''Earth radius, cm'''
+        return 6.378137e8
 
-'''Proton mass, g'''
-mH = 1.672621898e-24
-
-'''Boltzmann constant, erg/K'''
-kB = 1.38064852e-16
-
-'''Planck constant, erg s'''
-h = 6.6260755e-27
+    @property
+    def RSun(self):
+        '''Solar radius, cm'''
+        return 6.9551e10
