@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import pyevtk.hl as vtk
+import cyvtk as vtk
 from coordsys import CartesianCoordinates
 
 
@@ -141,6 +141,9 @@ class Radmc3dVtkRender(object):
         cellData.update(self.read_dust_temperature(io, grid))
 
         xx, yy, zz = grid.ptcoords.transformTo(CartesianCoordinates)
-        vtk.gridToVTK(io.fullpath('model'), xx, yy, zz, cellData=cellData)
+        c = vtk.PyStructuredGrid(xx, yy, zz)
+        for k, v in cellData:
+            c.add_scalar_point_data(k, v)
+        c.write_to_file(io.fullpath('model'))
 
 # vim: set ft=python:
