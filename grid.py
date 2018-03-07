@@ -219,7 +219,6 @@ class RegularGrid(Grid):
     @property
     def vtk(self):
 
-        xx, yy, zz = self._ptcoords.transformTo(CartesianCoordinates)
-        return vtk.PyUnstructuredGrid(xx.ravel(), yy.ravel(), zz.ravel())
+        return vtk.PyStructuredGrid(self._u, self._v, self._w)
 
 # vim: set ft=python:

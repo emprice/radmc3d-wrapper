@@ -28,12 +28,12 @@ class VtkRender(object):
         for scalar in ['dust_density', 'dust_temperature', 'gas_number_density']:
             for k, v in mapped[scalar].items():
                 if v is None: continue
-                vtk_grid.add_scalar_cell_data('%s_%s' % (scalar, k), v.ravel())
+                vtk_grid.add_scalar_cell_data('%s_%s' % (scalar, k), v)
 
         for scalar in ['gas_temperature']:
             s = mapped[scalar]
             if s is None: continue
-            vtk_grid.add_scalar_cell_data(scalar, s.ravel())
+            vtk_grid.add_scalar_cell_data(scalar, s)
 
         for vector in ['gas_velocity']:
             v = mapped[vector]

@@ -61,13 +61,13 @@ class Mapper(object):
                 for i in xrange(nrspec):
                     offset = count * np.dtype(np.int64).itemsize + \
                         np.dtype(dtype).itemsize * nrcells * i
-                    ret[names[i]] = io.memmap(f, offset=offset, dtype=dtype,
-                        shape=shape, mode='r')
+                    ret[names[i]] = np.ascontiguousarray(io.memmap(f,
+                        offset=offset, dtype=dtype, shape=shape, mode='r'))
 
             else:
                 for i in xrange(nrspec):
-                    ret[names[i]] = np.fromfile(f, dtype=dtype,
-                        count=nrcells, sep=sep).reshape(shape, order='F')
+                    ret[names[i]] = np.ascontiguousarray(np.fromfile(f, dtype=dtype,
+                        count=nrcells, sep=sep).reshape(shape, order='F'))
 
         return ret
 
@@ -109,12 +109,12 @@ class Mapper(object):
 
                 if binary:
                     offset = hdr.nbytes
-                    ret[name] = io.memmap(f, offset=offset, dtype=dtype,
-                        shape=shape, mode='r')
+                    ret[name] = np.ascontiguousarray(io.memmap(f, offset=offset,
+                        dtype=dtype, shape=shape, mode='r'))
 
                 else:
-                    ret[name] = np.fromfile(f, dtype=dtype,
-                        count=nrcells, sep=sep).reshape(shape, order='F')
+                    ret[name] = np.ascontiguousarray(np.fromfile(f, dtype=dtype,
+                        count=nrcells, sep=sep).reshape(shape, order='F'))
 
         return ret
 
@@ -142,13 +142,13 @@ class Mapper(object):
 
             if binary:
                 offset = hdr.nbytes
-                ret = io.memmap(f, offset=offset, dtype=dtype,
-                    shape=shape, mode='r')
+                ret = np.ascontiguousarray(io.memmap(f, offset=offset,
+                    dtype=dtype, shape=shape, mode='r'))
 
             else:
-                ret = np.fromfile(f, dtype=dtype,
+                ret = np.ascontiguousarray(np.fromfile(f, dtype=dtype,
                     count=3*nrcells if vector else nrcells, sep=sep).\
-                        reshape(shape, order='F')
+                        reshape(shape, order='F'))
 
         return ret
 
