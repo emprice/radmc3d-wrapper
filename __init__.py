@@ -20,9 +20,13 @@ def execute(cmd, working_dir):
         for line in iter(proc.stdout.readline, b''):
             sys.stdout.write(line)
             sys.stdout.flush()
+
         for line in iter(proc.stderr.readline, b''):
             sys.stderr.write(line)
             sys.stderr.flush()
+
+        proc.communicate()
+
     finally:
         os.chdir(olddir)
 
@@ -30,6 +34,7 @@ def execute(cmd, working_dir):
 from cgs import *
 from star import *
 from dust import *
+from grid import *
 from simulation import *
 
 # vim: set ft=python:

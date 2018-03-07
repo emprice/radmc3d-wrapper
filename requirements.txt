@@ -1,2 +1,2 @@
 numpy >= 1.10.1
-PyEVTK == 1.0.0
+pyvisfile >= 2014.1

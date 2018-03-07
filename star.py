@@ -3,7 +3,7 @@
 from coordsys import CartesianCoordinates
 
 
-class Radmc3dStar(object):
+class Star(object):
     '''
     Base class for a star definition.
 
@@ -65,7 +65,7 @@ class Radmc3dStar(object):
 
 
 
-class Radmc3dBlackbodyStar(Radmc3dStar):
+class BlackbodyStar(Star):
     '''
     Defines an ideal blackbody star, which is parametrized by only its
     effective temperature.
@@ -75,7 +75,7 @@ class Radmc3dBlackbodyStar(Radmc3dStar):
 
     def __init__(self, Teff=0., **kwargs):
 
-        super(Radmc3dBlackbodyStar, self).__init__(**kwargs)
+        super(BlackbodyStar, self).__init__(**kwargs)
         self._Teff = Teff
 
 
@@ -95,14 +95,14 @@ class Radmc3dBlackbodyStar(Radmc3dStar):
 
 
 
-class Radmc3dStarContainer(dict):
+class StarContainer(dict):
     '''
     Container for a variable number of stars. To support friendly naming
     of stars, this class inherits from :code:`dict` so that new stars can be
     added like so:
 
-    >>> c = Radmc3dStarContainer()
-    >>> c[0] = Radmc3dBlackbodyStar()
+    >>> c = StarContainer()
+    >>> c[0] = BlackbodyStar()
     >>> c[0].Teff = 5700.
 
     String names can also be used instead of numeric indices. If a duplicate
@@ -115,9 +115,9 @@ class Radmc3dStarContainer(dict):
         RADMC3D. This function uses the I/O context to determine the output
         format (binary or ASCII) and formats all files appropriately.
 
-        :param fileio.Radmc3dIo io: Current I/O context
+        :param fileio.Io io: Current I/O context
         :param np.ndarray lmbda: Wavelength array
-        :param grid.Radmc3dGrid grid: Current grid definition
+        :param grid.Grid grid: Current grid definition
         '''
 
         with io.file_open_write('stars.inp') as f:

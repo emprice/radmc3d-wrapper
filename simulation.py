@@ -5,11 +5,12 @@ from fileio import *
 from grid import *
 from star import *
 from dust import *
+from gas import *
 from render import *
 from __init__ import execute
 
 
-class Radmc3dSimulation(object):
+class Simulation(object):
     '''
     Primary class for carrying out simulations with RADMC3D.
     '''
@@ -19,28 +20,59 @@ class Radmc3dSimulation(object):
         self._lmbda = np.empty((0,))
         self.nlmbda = 0
 
-        self._dust = dict()
+        self._config = Configuration()
+        self._io = Io()
+        self._grid = Grid()
+        self._star = StarContainer()
+        self._dust = DustContainer()
+        self._gas = MoleculeContainer()
+        self._render = VtkRender()
 
-        self._config = Radmc3dConfiguration()
-        self._io = Radmc3dIo()
-        self._grid = Radmc3dGrid()
-        self._star = Radmc3dStarContainer()
-        self._dust = Radmc3dDustContainer()
-        self._render = Radmc3dVtkRender()
+        self._config_written = False
+        self._grid_written = False
+        self._cleaned = False
 
 
-    def commit(self):
+    def commit_mctherm(self):
         '''
         Writes the encapsulated data to files in the output directory, to be
-        read by RADMC3D.
+        read by RADMC3D for Monte Carlo thermal simulation.
         '''
+
+        if not self._cleaned:
+            self._io.smart_clean_outdir()
+            self._cleaned = True
 
         self.write_wavelengths()
 
-        self._config.write(self._io)
-        self._grid.write(self._io)
+        if not self._config_written:
+            self._config.write(self._io)
+            self._config_written = True
+
+        if not self._grid_written:
+            self._grid.write(self._io)
+            self._grid_written = True
+
         self._star.write(self._io, self._lmbda, self._grid)
         self._dust.write(self._io, self._grid)
+
+
+    def commit_lines(self):
+        '''
+        '''
+        if not self._cleaned:
+            self._io.smart_clean_outdir()
+            self._cleaned = True
+
+        if not self._config_written:
+            self._config.write(self._io)
+            self._config_written = True
+
+        if not self._grid_written:
+            self._grid.write(self._io)
+            self._grid_written = True
+
+        self._gas.write(self._io, self._grid)
 
 
     def write_wavelengths(self):
@@ -51,7 +83,7 @@ class Radmc3dSimulation(object):
             self._lmbda.tofile(f, sep='\n', format='%e')
 
 
-    def mctherm(self):
+    def run_mctherm(self):
         '''Runs the :code:`mctherm` command of RADMC3D.'''
         execute('radmc3d mctherm', self.io.outdir)
 
@@ -86,10 +118,19 @@ class Radmc3dSimulation(object):
         '''Accessor to the underlying grid object.'''
         return self._grid
 
+    @grid.setter
+    def grid(self, g):
+        self._grid = g
+
     @property
     def dust(self):
         '''Accessor to the underlying dust container object.'''
         return self._dust
+
+    @property
+    def gas(self):
+        '''Accessor to the underlying molecule container object.'''
+        return self._gas
 
     @property
     def star(self):

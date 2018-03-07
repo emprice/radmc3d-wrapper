@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import re
 import os
+import glob
 import numpy as np
 
 
-class Radmc3dIo(object):
+class Io(object):
     '''
     Class defining common I/O operations needed by the module so that they
     can be carried out in a consistent way.
@@ -17,6 +19,18 @@ class Radmc3dIo(object):
         self._binary = False
         self._precis = 8
         self._dtype = np.float64
+
+
+    def smart_clean_outdir(self):
+        '''
+        '''
+
+        p = re.compile(r'(.*?\.(binp|bdat))|(radmc3d\..*)|(^(?!(dustkappa|molecule)).*?\.inp)|(.*?\.vt[usk]{1})')
+
+        for dirpath, dirnames, filenames in os.walk(self._outdir):
+            for f in filenames:
+                if p.match(f): self.file_remove(f)
+            break
 
 
     def fullpath(self, fname):
@@ -126,6 +140,11 @@ class Radmc3dIo(object):
         return open(self.fullpath(target), 'r')
 
 
+    def file_remove(self, target):
+        self.safe_check_clobber(target)
+        os.remove(self.fullpath(target))
+
+
     @property
     def outdir(self):
         '''The output directory, relative to the initial directory'''
@@ -153,7 +172,7 @@ class Radmc3dIo(object):
         :code:`True` if input files should be binary; :code:`False` if
         ASCII should be used instead. Note that this has no effect on the
         format of output files; for that setting, see
-        :func:`~configuration.Radmc3dConfiguration.rto_style`.
+        :func:`~configuration.Configuration.rto_style`.
         '''
         return self._binary
 
@@ -167,7 +186,7 @@ class Radmc3dIo(object):
         Set to :code:`double` if double-precision input is desired; otherwise,
         set to :code:`single`. Note that this has no effect on the format of
         output files; for that setting, see
-        :func:`~configuration.Radmc3dConfiguration.rto_single`.
+        :func:`~configuration.Configuration.rto_single`.
         '''
         return 'double' if self._precis == 8 else 'single'
 

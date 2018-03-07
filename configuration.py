@@ -3,7 +3,7 @@
 import numpy as np
 
 
-class Radmc3dConfiguration(object):
+class Configuration(object):
     '''
     Simple container class for the RADMC3D configuration. Both member assignment
     and retrieval are supported, but no validation is done on the set values.
@@ -49,13 +49,14 @@ class Radmc3dConfiguration(object):
         self._lines_partition_temp1 = None
         self._lines_show_pictograms = None
         self._tgas_eq_tdust = None
+        self._modified_random_walk = None
 
 
     def write(self, io):
         '''
         Writes the encapsulated configuration to the file :code:`radmc3d.inp`.
 
-        :param Radmc3dIo io: Global I/O instance
+        :param Io io: Global I/O instance
         '''
 
         with io.file_open_write('radmc3d.inp') as f:
@@ -370,5 +371,13 @@ class Radmc3dConfiguration(object):
     @tgas_eq_tdust.setter
     def tgas_eq_tdust(self, val):
         self._tgas_eq_tdust = val
+
+    @property
+    def modified_random_walk(self):
+        return self._modified_random_walk
+
+    @modified_random_walk.setter
+    def modified_random_walk(self, val):
+        self._modified_random_walk = val
 
 # vim: set ft=python:

@@ -3,7 +3,7 @@
 import numpy as np
 
 
-class Radmc3dDustSpecies(object):
+class DustSpecies(object):
     '''
     Base class from which all dust species definitions should inherit. For
     example, to define a new (and fairly contrived) species with density
@@ -13,7 +13,7 @@ class Radmc3dDustSpecies(object):
 
        import radmc3d as r3d
 
-       class SomeDustSpecies(r3d.Radmc3dDustSpecies):
+       class SomeDustSpecies(r3d.DustSpecies):
            def density(self, coords):
                rr, _, _ = coords.transformTo(r3d.SphericalCoordinates)
                return rr**2
@@ -37,13 +37,13 @@ class Radmc3dDustSpecies(object):
 
 
 
-class Radmc3dDustContainer(dict):
+class DustContainer(dict):
     '''
     Container for a variable number of dust species. To support friendly naming
     of dust species, this class inherits from :code:`dict` so that new
     species can be added like so:
 
-    >>> c = Radmc3dDustContainer()
+    >>> c = DustContainer()
     >>> c['some_name'] = SomeDustSpecies()
 
     If a duplicate name is used, the previous species will be overwritten.
@@ -55,8 +55,8 @@ class Radmc3dDustContainer(dict):
         RADMC3D. This function uses the I/O context to determine the output
         format (binary or ASCII) and formats all files appropriately.
 
-        :param fileio.Radmc3dIo io: Current I/O context
-        :param grid.Radmc3dGrid grid: Current grid definition
+        :param fileio.Io io: Current I/O context
+        :param grid.Grid grid: Current grid definition
         '''
 
         with io.file_open_write('dustopac.inp') as f:
@@ -87,8 +87,8 @@ class Radmc3dDustContainer(dict):
 
             if io.binary:
                 for i, d in enumerate(self.values()):
-                    shape = (grid.nu, grid.nv, grid.nw)
-                    offset = 4 * np.dtype(np.int64).itemsize + \
+                    shape = grid.shape
+                    offset = hdr.nbytes + \
                         i * grid.nrcells * np.dtype(io.dtype).itemsize
 
                     density = io.memmap(fname, offset=offset, shape=shape,
@@ -97,7 +97,7 @@ class Radmc3dDustContainer(dict):
 
             else:
                 for d in self.values():
-                    density = d.density(grid.cellcoords)
+                    density = d.density(grid.cellcoords).ravel(order='F')
                     density.tofile(f, sep=sep, format='%e')
 
 # vim: set ft=python:

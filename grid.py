@@ -3,13 +3,12 @@
 import numpy as np
 from coordsys import CartesianCoordinates, SphericalCoordinates, \
     CylindricalCoordinates
+from vectorsys import CartesianVectorField, SphericalVectorField, \
+    CylindricalVectorField
+import cyvtk as vtk
 
 
-class Radmc3dGrid(object):
-    '''
-    Represents a RADMC3D grid. Currently, only regular grids are supported,
-    but AMR and oct-tree grids may be added later.
-    '''
+class Grid(object):
 
     def __init__(self):
 
@@ -17,6 +16,9 @@ class Radmc3dGrid(object):
                           100 : SphericalCoordinates,
                           200 : CylindricalCoordinates }
         self.coordmap.update({ v : k for k, v in self.coordmap.items() })
+        self.vectormap = { CartesianCoordinates : CartesianVectorField,
+                           SphericalCoordinates : SphericalVectorField,
+                           CylindricalCoordinates : CylindricalVectorField }
 
         self._nu = self._nv = self._nw = 0
         self._ptcoords = None
@@ -32,31 +34,9 @@ class Radmc3dGrid(object):
         '''
         Writes a grid definition to a file.
 
-        :param Radmc3dIo io: Current I/O context
+        :param Io io: Current I/O context
         '''
-
-        sep = '' if io.binary else '\n'
-        ext = 'binp' if io.binary else 'inp'
-
-        with io.file_open_write('.'.join(['amr_grid', ext])) as f:
-
-            hdr = np.empty((10,), dtype=np.int64)
-            hdr[0] = 1
-            hdr[1] = 0
-            hdr[2] = self.coordmap[self.coordsys]
-            hdr[3] = 0
-            hdr[4] = hdr[5] = hdr[6] = 1
-            hdr[7] = self._nu
-            hdr[8] = self._nv
-            hdr[9] = self._nw
-
-            hdr.tofile(f, sep=sep, format='%d')
-            if not io.binary: f.write('\n')
-            self._u.astype(io.dtype).tofile(f, sep=sep, format='%e')
-            if not io.binary: f.write('\n')
-            self._v.astype(io.dtype).tofile(f, sep=sep, format='%e')
-            if not io.binary: f.write('\n')
-            self._w.astype(io.dtype).tofile(f, sep=sep, format='%e')
+        raise NotImplementedError
 
 
     def update_coords(self):
@@ -64,21 +44,8 @@ class Radmc3dGrid(object):
         Private function. Updates the definitions of the point and cell
         coordinates after a change to one of the coordinate arrays.
         '''
-        uu, vv, ww = np.meshgrid(self._u, self._v, self._w, indexing='ij')
-        self._ptcoords = self.coordsys(uu, vv, ww)
+        raise NotImplementedError
 
-        umid = (self._u[1:] + self._u[:-1]) / 2.
-        vmid = (self._v[1:] + self._v[:-1]) / 2.
-        wmid = (self._w[1:] + self._w[:-1]) / 2.
-
-        uu, vv, ww = np.meshgrid(umid, vmid, wmid, indexing='ij')
-        self._cellcoords = self.coordsys(uu, vv, ww)
-
-
-    @property
-    def nrcells(self):
-        '''Read-only; gives the total number of cells in this grid.'''
-        return self._nu * self._nv * self._nw
 
     @property
     def ptcoords(self):
@@ -167,5 +134,92 @@ class Radmc3dGrid(object):
     def nw(self):
         '''Read-only; gives the number of cells in the `w` dimension.'''
         return self._nw
+
+    @property
+    def vectorsys(self):
+        ''' '''
+        return self.vectormap[self.coordsys]
+
+    @property
+    def shape(self):
+        raise NotImplementedError
+
+    @property
+    def vtk(self):
+        raise NotImplementedError
+
+
+
+class RegularGrid(Grid):
+    '''
+    Represents a RADMC3D grid. Currently, only regular grids are supported,
+    but AMR and oct-tree grids may be added later.
+    '''
+
+    def __init__(self):
+        super(RegularGrid, self).__init__()
+
+
+    def write(self, io):
+        '''
+        Writes a grid definition to a file.
+
+        :param Io io: Current I/O context
+        '''
+
+        sep = '' if io.binary else '\n'
+        ext = 'binp' if io.binary else 'inp'
+
+        with io.file_open_write('.'.join(['amr_grid', ext])) as f:
+
+            hdr = np.empty((10,), dtype=np.int64)
+            hdr[0] = 1
+            hdr[1] = 0
+            hdr[2] = self.coordmap[self.coordsys]
+            hdr[3] = 0
+            hdr[4] = hdr[5] = hdr[6] = 1
+            hdr[7] = self._nu
+            hdr[8] = self._nv
+            hdr[9] = self._nw
+
+            hdr.tofile(f, sep=sep, format='%d')
+            if not io.binary: f.write('\n')
+            self._u.astype(io.dtype).tofile(f, sep=sep, format='%e')
+            if not io.binary: f.write('\n')
+            self._v.astype(io.dtype).tofile(f, sep=sep, format='%e')
+            if not io.binary: f.write('\n')
+            self._w.astype(io.dtype).tofile(f, sep=sep, format='%e')
+
+
+    def update_coords(self):
+        '''
+        Private function. Updates the definitions of the point and cell
+        coordinates after a change to one of the coordinate arrays.
+        '''
+        uu, vv, ww = np.meshgrid(self._u, self._v, self._w, indexing='ij')
+        self._ptcoords = self.coordsys(uu, vv, ww)
+
+        umid = (self._u[1:] + self._u[:-1]) / 2.
+        vmid = (self._v[1:] + self._v[:-1]) / 2.
+        wmid = (self._w[1:] + self._w[:-1]) / 2.
+
+        uu, vv, ww = np.meshgrid(umid, vmid, wmid, indexing='ij')
+        self._cellcoords = self.coordsys(uu, vv, ww)
+
+
+    @property
+    def shape(self):
+        return (self._nu, self._nv, self._nw)
+
+    @property
+    def nrcells(self):
+        '''Read-only; gives the total number of cells in this grid.'''
+        return self._nu * self._nv * self._nw
+
+    @property
+    def vtk(self):
+
+        xx, yy, zz = self._ptcoords.transformTo(CartesianCoordinates)
+        return vtk.PyUnstructuredGrid(xx.ravel(), yy.ravel(), zz.ravel())
 
 # vim: set ft=python:

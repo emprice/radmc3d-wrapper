@@ -91,4 +91,14 @@ class cgs(object):
         '''Solar radius, cm'''
         return 6.9551e10
 
+    @classproperty
+    def k(self):
+        '''Boltzmann constant, erg/K'''
+        return 1.380658e-16
+
+    @classproperty
+    def mH(self):
+        '''Mass of H, g'''
+        return 1.6733e-24
+
 # vim: set ft=python:

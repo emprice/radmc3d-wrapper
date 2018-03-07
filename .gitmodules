@@ -1,0 +1,3 @@
+[submodule "docs/jade"]
+	path = docs/jade
+	url = https://github.com/emprice/jade
